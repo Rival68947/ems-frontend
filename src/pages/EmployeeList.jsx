@@ -45,6 +45,9 @@ function EmployeeList() {
     }
   };
 
+  const user = JSON.parse(localStorage.getItem('ems_user') || '{}');
+  const isEmployer = user?.role === 'Employer';
+
   return (
     <div className="animate-fade-in">
       <div className="page-header">
@@ -52,11 +55,14 @@ function EmployeeList() {
           <h1 className="page-title">Employee Directory</h1>
           <p className="page-subtitle">Manage, view, and update corporate employee details</p>
         </div>
-        <Link to="/employees/add" className="btn btn-primary">
-          <Plus size={18} />
-          <span>Add Employee</span>
-        </Link>
+        {isEmployer && (
+          <Link to="/employees/add" className="btn btn-primary">
+            <Plus size={18} />
+            <span>Add Employee</span>
+          </Link>
+        )}
       </div>
+
 
       {/* Filter and Search Bar */}
       <div className="glass-card filters-bar">
@@ -144,21 +150,26 @@ function EmployeeList() {
                         >
                           <Eye size={16} />
                         </button>
-                        <button
-                          className="btn-icon"
-                          title="Edit Employee"
-                          onClick={() => navigate(`/employees/edit/${emp.id}`)}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          className="btn-icon delete"
-                          title="Delete Employee"
-                          onClick={() => handleDelete(emp.id, `${emp.firstName} ${emp.lastName}`)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {isEmployer && (
+                          <>
+                            <button
+                              className="btn-icon"
+                              title="Edit Employee"
+                              onClick={() => navigate(`/employees/edit/${emp.id}`)}
+                            >
+                              <Pencil size={16} />
+                            </button>
+                            <button
+                              className="btn-icon delete"
+                              title="Delete Employee"
+                              onClick={() => handleDelete(emp.id, `${emp.firstName} ${emp.lastName}`)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </>
+                        )}
                       </div>
+
                     </td>
                   </tr>
                 ))}

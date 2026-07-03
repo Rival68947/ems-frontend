@@ -1,10 +1,21 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import EmployeeList from './pages/EmployeeList';
 import EmployeeDetails from './pages/EmployeeDetails';
 import EmployeeForm from './pages/EmployeeForm';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+
+// Route guard wrapper checking localStorage session
+function ProtectedRoute({ children }) {
+  const user = localStorage.getItem('ems_user');
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
 
 /**
  * Main App Router configuration.
@@ -14,7 +25,19 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        {/* Public Authentication routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Private Dashboard routes protected by guard */}
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           {/* Dashboard view */}
           <Route index element={<Dashboard />} />
           
@@ -31,7 +54,7 @@ function App() {
           <Route path="employees/edit/:id" element={<EmployeeForm />} />
           
           {/* Fallback redirect */}
-          <Route path="*" element={<Dashboard />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -39,3 +62,4 @@ function App() {
 }
 
 export default App;
+

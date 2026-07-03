@@ -75,6 +75,9 @@ function EmployeeDetails() {
     }).format(amount);
   };
 
+  const user = JSON.parse(localStorage.getItem('ems_user') || '{}');
+  const isEmployer = user?.role === 'Employer';
+
   return (
     <div className="animate-fade-in">
       <div className="page-header">
@@ -82,17 +85,20 @@ function EmployeeDetails() {
           <ArrowLeft size={16} />
           <span>Back to Directory</span>
         </Link>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Link to={`/employees/edit/${id}`} className="btn btn-secondary">
-            <Pencil size={16} />
-            <span>Edit Profile</span>
-          </Link>
-          <button className="btn btn-danger" onClick={handleDelete}>
-            <Trash2 size={16} />
-            <span>Delete Employee</span>
-          </button>
-        </div>
+        {isEmployer && (
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <Link to={`/employees/edit/${id}`} className="btn btn-secondary">
+              <Pencil size={16} />
+              <span>Edit Profile</span>
+            </Link>
+            <button className="btn btn-danger" onClick={handleDelete}>
+              <Trash2 size={16} />
+              <span>Delete Employee</span>
+            </button>
+          </div>
+        )}
       </div>
+
 
       <div className="profile-layout">
         {/* Left Side: Avatar Card */}

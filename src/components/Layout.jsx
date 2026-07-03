@@ -9,14 +9,25 @@ import Navbar from './Navbar';
  */
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem('ems_user') || '{}');
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem('ems_user');
+    window.location.href = '/login'; // Hard reload to clear all states
+  };
+
   return (
     <div className="app-container">
       {/* Sidebar Navigation */}
-      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+      <Sidebar 
+        isOpen={sidebarOpen} 
+        onClose={closeSidebar} 
+        user={user} 
+        onLogout={handleLogout} 
+      />
       
       {/* Content wrapper */}
       <div className="main-content">
@@ -31,5 +42,6 @@ function Layout() {
     </div>
   );
 }
+
 
 export default Layout;
