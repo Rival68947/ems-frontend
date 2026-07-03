@@ -87,7 +87,7 @@ function Login() {
                 style={{ paddingLeft: '2.5rem' }}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username (e.g. admin)"
+                placeholder="Enter your username"
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ function Login() {
                 style={{ paddingLeft: '2.5rem' }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password (e.g. admin123)"
+                placeholder="Enter your password"
               />
             </div>
           </div>
@@ -113,19 +113,10 @@ function Login() {
           </button>
         </form>
 
-        <div className="glass-card" style={{ marginTop: '1.5rem', background: 'rgba(255,255,255,0.01)', padding: '0.75rem 1rem' }}>
-          <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'white', marginBottom: '0.4rem' }}>
-            💡 Quick Demo Access:
-          </p>
-          <ul style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', listStyleType: 'none', paddingLeft: 0 }}>
-            <li>👨‍💼 <strong>Employer:</strong> admin / admin123</li>
-            <li>👨‍💻 <strong>Employee:</strong> employee / employee123</li>
-          </ul>
-        </div>
-
         <div className="auth-footer">
           Don't have an account? <Link to="/signup">Register now</Link>
         </div>
+
       </div>
     </div>
   );

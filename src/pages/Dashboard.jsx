@@ -71,15 +71,6 @@ function Dashboard() {
           <p className="page-subtitle">Real-time statistics of the organization's workforce</p>
         </div>
       </div>
-
-      {isEmployee && (
-        <div className="info-banner animate-fade-in">
-          <AlertCircle size={18} />
-          <span>You are logged in as an <strong>Employee</strong> (Read-only mode). Modifying employee records is restricted to Employer accounts.</span>
-        </div>
-      )}
-
-
       {/* Grid of Statistical summary cards */}
       <div className="stats-grid">
         <div className="glass-card stat-card">

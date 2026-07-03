@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
@@ -10,14 +10,16 @@ import Navbar from './Navbar';
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('ems_user') || '{}');
+  const navigate = useNavigate();
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
 
   const handleLogout = () => {
     localStorage.removeItem('ems_user');
-    window.location.href = '/login'; // Hard reload to clear all states
+    navigate('/login'); // Client-side redirect to prevent server page fetch 404s
   };
+
 
   return (
     <div className="app-container">
