@@ -6,11 +6,15 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/
  * Uses standard Fetch API to perform CRUD operations.
  */
 export const employeeApi = {
-  // Fetch all employees (supports search and department query parameters)
-  async getAll(search = '', department = '') {
+  // Fetch all employees (supports search, filter, sort and page parameters)
+  async getAll(search = '', department = '', sortBy = 'firstName', order = 'asc', page = 1, limit = 5) {
     const params = new URLSearchParams();
     if (search) params.append('search', search);
     if (department && department !== 'All') params.append('department', department);
+    if (sortBy) params.append('sortBy', sortBy);
+    if (order) params.append('order', order);
+    if (page) params.append('page', page);
+    if (limit) params.append('limit', limit);
 
     const response = await fetch(`${API_BASE_URL}?${params.toString()}`);
     if (!response.ok) {
@@ -18,6 +22,7 @@ export const employeeApi = {
     }
     return await response.json();
   },
+
 
   // Fetch a single employee by ID
   async getById(id) {

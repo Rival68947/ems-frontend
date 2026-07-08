@@ -8,6 +8,11 @@ function EmployeeList() {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState('');
   const [department, setDepartment] = useState('All');
+  const [sortBy, setSortBy] = useState('firstName');
+  const [order, setOrder] = useState('asc');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalEmployees, setTotalEmployees] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,13 +21,15 @@ function EmployeeList() {
 
   useEffect(() => {
     fetchEmployees();
-  }, [search, department]);
+  }, [search, department, sortBy, order, page]);
 
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const data = await employeeApi.getAll(search, department);
-      setEmployees(data);
+      const data = await employeeApi.getAll(search, department, sortBy, order, page, 5);
+      setEmployees(data.employees || []);
+      setTotalPages(data.pagination?.totalPages || 1);
+      setTotalEmployees(data.pagination?.totalEmployees || 0);
       setError(null);
     } catch (err) {
       console.error(err);
@@ -31,6 +38,7 @@ function EmployeeList() {
       setLoading(false);
     }
   };
+
 
   const handleDelete = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete employee "${name}"?`)) {
@@ -73,7 +81,10 @@ function EmployeeList() {
             className="form-control search-input"
             placeholder="Search by name or position..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
           />
         </div>
         
@@ -81,7 +92,10 @@ function EmployeeList() {
           <select
             className="form-control"
             value={department}
-            onChange={(e) => setDepartment(e.target.value)}
+            onChange={(e) => {
+              setDepartment(e.target.value);
+              setPage(1);
+            }}
           >
             {departments.map((dept) => (
               <option key={dept} value={dept}>
@@ -90,7 +104,38 @@ function EmployeeList() {
             ))}
           </select>
         </div>
+
+        {/* Sorting Dropdowns */}
+        <div className="filter-select">
+          <select
+            className="form-control"
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="firstName">Sort by Name</option>
+            <option value="salary">Sort by Salary</option>
+            <option value="joiningDate">Sort by Date Joined</option>
+          </select>
+        </div>
+
+        <div className="filter-select" style={{ width: '130px' }}>
+          <select
+            className="form-control"
+            value={order}
+            onChange={(e) => {
+              setOrder(e.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
       </div>
+
 
       {/* Error View */}
       {error && (
@@ -175,9 +220,37 @@ function EmployeeList() {
                 ))}
               </tbody>
             </table>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderTop: '1px solid var(--card-border)', flexWrap: 'wrap', gap: '1rem' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                  Showing Page {page} of {totalPages} ({totalEmployees} total employees)
+                </span>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button 
+                    className="btn btn-secondary" 
+                    disabled={page <= 1} 
+                    onClick={() => setPage(prev => prev - 1)}
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
+                  >
+                    Previous
+                  </button>
+                  <button 
+                    className="btn btn-secondary" 
+                    disabled={page >= totalPages} 
+                    onClick={() => setPage(prev => prev + 1)}
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
+
     </div>
   );
 }
